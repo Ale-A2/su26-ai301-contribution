@@ -1,18 +1,18 @@
 # su26-ai301-contribution
 
 
-# Contribution [#]: [Issue Title]
+# Contribution [#]: [Allow UI setting to control MAX FRAME-rate]
 
-**Contribution Number:** [1 / 2 / 3]  
-**Student:** [Your Name]  
-**Issue:** [GitHub issue link]  
-**Status:** [Phase I / Phase II / Phase III / Phase IV] [In Progress / Complete]
+**Contribution Number:** [1]  
+**Student:** [Anthony Aleman]  
+**Issue:** [GitHub issue link] (https://github.com/wesnoth/wesnoth/issues/2210)
+**Status:** [Phase I ] [Complete]
 
 ---
 
 ## Why I Chose This Issue
 
-[1-2 paragraphs explaining why this issue interests you, how it matches your skills/learning goals, what you hope to learn]
+[During spring 2026 semester I took a class engines on my school. It really did not involve to much working with vigeo games, or as much as I would have expected, but we did work on creating a simple game engine. Although simple, I appreciate the ground work to break into this field. With this project I aim to Explore working on more video games coded in C++./]
 
 ---
 
@@ -20,15 +20,15 @@
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+[The game has defaul frame setting that woek with the images in their project. They would like to expand this feature by creating a frame control slider.]
 
 ### Expected Behavior
 
-[What should happen?]
+[Create an interface to users to be able to choose the max frame rate for their game]
 
 ### Current Behavior
 
-[What actually happens?]
+[For now the game only has defaul setting, and a contributor disabled this feature while working on it.]
 
 ### Affected Components
 
