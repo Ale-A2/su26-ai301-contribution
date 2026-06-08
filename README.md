@@ -44,9 +44,10 @@
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. [Fork the repo with a recursive flag to replicate all of the files and repos contained in the main]
+2. [Download Visual Studio community along with VCPKG to download all of the dependancied of the project]
+3. [During this step I found some set up bug, particularly, the package downloader had a hard time finding some files on my computer. It look me a considerable amount of time and debugging with claude to get it working] 
+4. [Observed result]
 
 ### Reproduction Evidence
 
