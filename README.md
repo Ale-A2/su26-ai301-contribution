@@ -32,7 +32,7 @@
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+[The files of the code base most likely involved are the source code that use C++, these files would be the display, draw manager, frame, animation, and menu event which would be where the toggle option would be added]
 
 ---
 
@@ -47,13 +47,13 @@
 1. [Fork the repo with a recursive flag to replicate all of the files and repos contained in the main]
 2. [Download Visual Studio community along with VCPKG to download all of the dependancied of the project]
 3. [During this step I found some set up bug, particularly, the package downloader had a hard time finding some files on my computer. It look me a considerable amount of time and debugging with claude to get it working] 
-4. [Observed result]
+4. [Observed result: The game runs properly and diagnositcs display in visual studio as they should. No bugs by just running the game]
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
+- **Commit showing reproduction:** [https://github.com/Ale-A2/wesnoth_ALE_contrib.git]
 - **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **My findings:** [Reproducing the game is not complicated, actually it is simply by following their guide of installation and having a proper visual studio set up. However, I tried hours on my main computer that is not a properly set up as my lapton and it wasn't able to replicate. I am still not sure why that is the case, but for proper execution Cmake and visual studio should handle all of the dependancies and setting up the environment for the user. Wait time is still long]
 
 ---
 
@@ -61,30 +61,44 @@
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+[Currently the game does have an option that modifies the max framerate, however this is not a UI fearture. Users can only control via the --max-fps CLI flag, which makes it difficult for non technical users and is under documented. The preference value already exist in the engine, so the goal is to implement the UI setting slider in the preferences.]
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+[The Display Preferences panel already has a "limit max frame-rate" toggle that needs to be enabled. The fix is to add a slider beneath it that lets users set the actual FPS value when that toggle is enabled. This exposes the existing --max-fps engine logic through a friendly UI, with no need to rewrite the frame-rate cap mechanism itself.]
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** [The game doesn't have an enabled max frame rate toggle and it must be added, preferably as an slider.]
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** [Wesnoth has a purpose-built WML system for exactly this. The [advanced_preference] tag defines entries in the Advanced Preferences dialog. For integer types it supports min, max, and step attributes. The field key must match what the game engine requests internally. This is the pattern to follow ]
 
 **Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+1. [Find the engine's preference key — search src/preferences/preferences.cpp and src/preferences/preferences.hpp for max_fps to find the exact field name the engine reads.]
+2. [Add the WML preference entry — in data/hardwired/ (or wherever existing [advanced_preference] entries live, check data/core/), add]
+ ```
+  [advanced_preference]
+       field = "max_fps"
+       name = _ "Max Frame Rate"
+       description = _ "Maximum frames per second. Lower values reduce battery usage."
+       default = 60
+       type = "int"
+       min = 15
+       max = 1000
+       step = 5
+   [/advanced_preference]
+```
+3. [Wire the toggle — if there's an existing "Limit frame rate" boolean toggle in src/gui/dialogs/preferences_dialog.cpp (or .hpp), make sure it enables/disables the slider. When the toggle is off, max_fps should be set to a sentinel (e.g. 0 or 1000) meaning uncapped.]
+4. [Verify the engine reads the preference — confirm display.cpp or draw_manager.cpp reads prefs::get().max_fps() (not just the CLI argument) so the UI change actually affects the frame cap at runtime.]
+5. [Test — use the in-game :fps command to verify the cap changes live when the preference is updated.]
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** [https://github.com/Ale-A2/wesnoth_ALE_contrib.git]
 
 **Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** [With --fps enabled, confirm the "act" column matches the slider value set in preferences. Test at 15, 30, 60, and monitor-rate values.]
 
 ---
 
