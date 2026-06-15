@@ -106,13 +106,13 @@ Using UMPIRE framework (adapted):
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
+- [ ] Test case 1: Enter a normal run of the game and check the setting. Normalyy it would not contain a slider for frame rate
 - [ ] Test case 2: [Description]
 - [ ] Test case 3: [Description]
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
+- [ ] File were modified and immediate tried to compile and link the c++ files to see how the code affected that actual assets in game( Compilation took half and hour)
 - [ ] Integration scenario 2
 
 ### Manual Testing
@@ -123,9 +123,16 @@ Using UMPIRE framework (adapted):
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week [3] Progress
 
-[What you built this week, challenges faced, decisions made]
+- [have parsed the data base to find where the implemenation of the frame rate slider could actually be done]
+- 03_display.cfg — added a "Max frame rate:" row (label + max_fps_slider + max_fps_slider_label value display) directly below the VSync toggle, since both relate to rendering.
+- preferences_dialog.cpp — two additions:
+  - After the VSync block: registered max_fps_slider against refresh_rate, set its range to 10 … native_refresh_rate, and a value-label transform where the top position shows "Unlimited".
+In pre_show: bind_default_status_label(...) so the value label updates live as you drag.
+
+**Challanges**:
+- Since source code was modified, the project had to be compiler again though cmake, this only took a couple of hours. However this came with the realization that any change made in the project would take a bunch of time to see some result that might end in failure.
 
 ### Week [Y] Progress
 
@@ -133,7 +140,7 @@ Using UMPIRE framework (adapted):
 
 ### Code Changes
 
-- **Files modified:** [List]
+- **Files modified:** 3_Display.cfg, preferences_diaolog.cpp
 - **Key commits:** [Links to important commits]
 - **Approach decisions:** [Why you chose certain approaches]
 
