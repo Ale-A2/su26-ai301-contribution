@@ -1,11 +1,11 @@
 # su26-ai301-contribution
 
 
-# Contribution [#]: [Allow UI setting to control MAX FRAME-rate]
+# Contribution [2210]: [Allow UI setting to control MAX FRAME-rate]
 
 **Contribution Number:** [1]  
 **Student:** [Anthony Aleman]  
-**Issue:** [GitHub issue link] (https://github.com/wesnoth/wesnoth/issues/2210)
+**Issue:** [GitHub issue link] (https://github.com/wesnoth/wesnoth/issues/2210)  
 **Status:** [Phase I ] [Complete]
 
 ---
@@ -24,7 +24,7 @@
 
 ### Expected Behavior
 
-[Create an interface to users to be able to choose the max frame rate for their game]
+[Create an interface withing the established gui of the game and include a slider that should change the frame rate of the game and take effect when the setting menu is closed]
 
 ### Current Behavior
 
@@ -52,8 +52,8 @@
 ### Reproduction Evidence
 
 - **Commit showing reproduction:** [https://github.com/Ale-A2/wesnoth_ALE_contrib.git]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [Reproducing the game is not complicated, actually it is simply by following their guide of installation and having a proper visual studio set up. However, I tried hours on my main computer that is not a properly set up as my lapton and it wasn't able to replicate. I am still not sure why that is the case, but for proper execution Cmake and visual studio should handle all of the dependancies and setting up the environment for the user. Wait time is still long]
+- **Screenshots/logs:** 
+- **My findings:** [Reproducing the game is not complicated, actually it is simply by following their guide of installation and having a proper visual studio set up. However, I tried hours on my main computer that is not as properly set up as my lapton and it wasn't able to replicate. I am still not sure why that is the case, but for proper execution Cmake and visual studio should handle all of the dependancies and setting up the environment for the user. Wait time is still long]
 
 ---
 
@@ -107,17 +107,19 @@ Using UMPIRE framework (adapted):
 ### Unit Tests
 
 - [ ] Test case 1: Enter a normal run of the game and check the setting. Normalyy it would not contain a slider for frame rate
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [ ] Test case 2: enable the fps data using the game engine 
+- [ ] Test case 3: Using the fps frame data and a build that contains the changes done for the issue, the slider should show in the preference setting and the frame data should reflect the change.
 
 ### Integration Tests
 
 - [ ] File were modified and immediate tried to compile and link the c++ files to see how the code affected that actual assets in game( Compilation took half and hour)
-- [ ] Integration scenario 2
+- [ ] Test with provided frame data
 
 ### Manual Testing
 
-[What you tested manually and results]
+To ensure that the slider works, I had to enable a flag for the executable of the game --fps. This enables a table that contains frame data of the image drawing renderer. Usually the game starts with fps unlimited which matches the frame rate of the monitor. With the slider, at the beginning, was showing and was reacting but the actual drawing manager file was not updating how the frames should be drawn. After some testing and rebuilding the project, the implemented changes had an effect of the display frame rate. 
+
+However, this effect is volatile. The game doesn't save the setting the user has chosen so whenever the start a new session their preference for frames is set to unlimited(Monitor refresh rate).
 
 ---
 
@@ -134,15 +136,31 @@ In pre_show: bind_default_status_label(...) so the value label updates live as y
 **Challanges**:
 - Since source code was modified, the project had to be compiler again though cmake, this only took a couple of hours. However this came with the realization that any change made in the project would take a bunch of time to see some result that might end in failure.
 
-### Week [Y] Progress
+### Week [4] Progress
 
-[Continue documenting as you work]
+- Re-structuring the slider so each desired frame gap is 5 steps and instead of having the choice available of 0 frames(which would make no sense), now the slider provides the options from 10-60 and pulling the tab at the end of the line enables the "unlimited" frame rate.
+  - Gui file was modified for these changes.
+```
+[slider]
+ id = "max_fps_slider"
+ definition = "minimal"
+ minimum_value,maximum_value = 10,65
+ step_size = 5
+ tooltip = _ "Limit the maximum frame rate. Set to ‘Unlimited’ to use your monitor’s native refresh rate."
+[/slider]
+```
+- When the user has set a max-fps cap below the monitor's refresh rate, also throttle frames that *were* drawn
+  otherwise actively-rendered frames are paced only by hardware vsync, so the cap has no effect (especially with vsync disabled).
+- Preference diaologue is what actually handles the setting of fps. It takes the data from the slider to set the refresh_rate
+- 
 
 ### Code Changes
 
 - **Files modified:** 3_Display.cfg, preferences_diaolog.cpp
-- **Key commits:** [Links to important commits]
+- **Key commits:** (https://github.com/Ale-A2/wesnoth_ALE_contrib/commit/8b93f165c322a76de1488f8aa03b5740cb6abd1f)
 - **Approach decisions:** [Why you chose certain approaches]
+<img width="1916" height="1126" alt="image" src="https://github.com/user-attachments/assets/49ade386-7ea7-4adc-ac51-de70c213bd2b" />
+<img width="1912" height="1120" alt="image" src="https://github.com/user-attachments/assets/0df8e366-8a20-468b-b55c-568cac961a82" />
 
 ---
 
@@ -153,31 +171,37 @@ In pre_show: bind_default_status_label(...) so the value label updates live as y
 **PR Description:** [Draft or final PR description - much of the content above can be adapted]
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
+- [Date]: I was immediate met with information about the issue, and the policies regarding the use of AI, so I have been researching the functionalities 
+of the source code to ensure that the code is good for deployment, **then I will make my pull request**.
 - [Date]: [How you addressed it]
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awaiting
 
 ---
 
 ## Learnings & Reflections
 
 ### Technical Skills Gained
-
-[What you learned technically]
+- This was my first time setting up such a large and dense project. I waas glad that cmake could handle building the project and taking care of the dependencies but wht I was not prepared for was the about 4 hours of downloading packages, setting environment and creating executable. This is skill I would like to polish so in the future I can implement it for my own projects.
+- Documentations reading. While this is skill I have been aware throughout my college career it had never really been put to the test- not at this level. 
+  - I had to read documentation for the installation of the project. How to run it and eventually I implemented the use of flag which in my experience has been limited to cli instruction but never to run projects like this. That flag was used to enable a fps information overlay.
+- Use of C++ style conventions and project coding stye conventions had to be applied.
+- Careful use of AI to understand the code base and the tools used to replicate the projects 
 
 ### Challenges Overcome
-
-[What was hard and how you solved it]
+- At the beginning I had issues setting up the environment. I was attempting to use my desktop because it has more graphical power and processing power. I am still unsure of the reason why that computer couldn't find the proper path for some of the files withing the directory of the project. 
+  - I moved the project onto my personal laptop. This is a machine I had previously use to work on the basic game engine I worked for a CSCI class. I alread had cmake and visual studio installed in it, so it was a matter of giving it the proper file path to start the building process.
+- The slider was only visual. At some point using the slider did not really change the frame rate for the game. If used it had no effect on the actual draw loop for the game. 
+  - I wasn't sure how to change it or what could have caused it. So I asked the AI agent to suggest a solution by describing the problem and giving it detailed information on what I wanted the change to be, it suggested a quick solution that took a couple of line changes.
+- The size of the codebase was too large in my opinion for a first time oss contribution. I had to use AI to parse the code safely and narrow down the code reading.
+- I think I overly relied on AI. This meant that is created an overhead at the end of the project so that I had to understand the changes and justify so that the maintainers actually accept the contribution.
 
 ### What I'd Do Differently Next Time
-
-[Reflection on your process]
+- Before I move to implementation I should do a thorough scan of the code base to understand how things are tied, and what files I should be able to modify.
+- I should spend more time checking if the scope of the project is something I can get into. Otherwise I would have to spend a lot of time reviewing and feeling lost due to the sheer amount of components to the project.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- [Project Coding Standards](https://wiki.wesnoth.org/CodingStandards#C.2B.2B_version)
